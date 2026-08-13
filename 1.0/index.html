@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Construction Takes Talent &mdash; Design Review</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="robots" content="noindex">
+<style>
+  :root{
+    --display:"Segoe UI Variable Display","Segoe UI",-apple-system,
+              "Helvetica Neue","Helvetica",Arial,sans-serif;
+    --body:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,
+           Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"Cascadia Mono","Segoe UI Mono",Consolas,"SF Mono",monospace;
+    --gutter:clamp(1.25rem,5vw,3.25rem);
+    --shell:1080px;
+  }
+  /* Light-only, pinned so a host page or OS dark mode can't half-invert it —
+     same guard both builds use. */
+  :root,
+  :root[data-theme="dark"],
+  :root[data-theme="light"]{
+    --bg:        #e0e2e1 !important;  /* surround — the recessed tone */
+    --sheet:     #eceded !important;  /* the review sheet */
+    --sheet-lift:#f5f6f5 !important;
+    --fg:        #1e2226 !important;
+    --fg-soft:   rgba(30,34,38,.72) !important;
+    --fg-faint:  rgba(30,34,38,.50) !important;
+    --accent:    #2596be !important;  /* graphic only — 2.9:1, never on type */
+    --accent-ink:#14607d !important;  /* all accent text — 5.7:1 */
+    --hairline:  rgba(30,34,38,.16) !important;
+    --rule:      rgba(30,34,38,.085) !important;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--bg);
+    color:var(--fg);
+    font-family:var(--body);
+    -webkit-font-smoothing:antialiased;
+    padding:clamp(1rem,4vw,2.5rem) var(--gutter) 4rem;
+  }
+  .sheet{
+    max-width:var(--shell);
+    margin:0 auto;
+    background:var(--sheet);
+    border:1px solid var(--hairline);
+  }
+
+  /* ---------- title block ---------- */
+  .titlebar{
+    display:flex;
+    align-items:stretch;
+    flex-wrap:wrap;
+    border-bottom:1px solid var(--hairline);
+    background:var(--sheet-lift);
+  }
+  .titlebar__name{
+    flex:1 1 240px;
+    padding:1.5rem 1.5rem 1.25rem;
+    border-right:1px solid var(--rule);
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:.6875rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--accent-ink);
+    margin:0 0 .5rem;
+  }
+  .titlebar__title{
+    font-family:var(--display);
+    font-weight:200;
+    font-size:clamp(1.85rem,5vw,2.9rem);
+    line-height:1;
+    letter-spacing:-.022em;
+    margin:0;
+  }
+  .titlebar__meta{display:flex;flex:0 0 auto;margin:0}
+  .metacell{
+    padding:1.5rem 1.25rem 1.25rem;
+    border-right:1px solid var(--rule);
+    min-width:6.5rem;
+  }
+  .metacell:last-child{border-right:0}
+  .metacell dt{
+    font-family:var(--mono);
+    font-size:.625rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--fg-faint);
+    margin:0 0 .45rem;
+  }
+  .metacell dd{
+    font-family:var(--mono);
+    font-size:.8125rem;
+    color:var(--fg-soft);
+    margin:0;
+  }
+
+  /* ---------- intro ---------- */
+  .intro{padding:1.75rem 1.5rem .25rem;max-width:56ch}
+  .intro p{margin:0;font-size:1rem;line-height:1.6;color:var(--fg-soft)}
+
+  /* ---------- build cards ---------- */
+  .builds{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    border-top:1px solid var(--hairline);
+  }
+  .build{
+    display:flex;
+    flex-direction:column;
+    text-decoration:none;
+    color:inherit;
+    border-right:1px solid var(--rule);
+    background:var(--sheet);
+    transition:background .16s ease;
+  }
+  .build:last-child{border-right:0}
+  .build:hover{background:var(--sheet-lift)}
+  .build:focus-visible{outline:2px solid var(--accent-ink);outline-offset:-3px}
+  .build__body{padding:1.9rem 1.5rem 1.9rem;flex:1}
+  .build__mark{
+    display:flex;
+    align-items:baseline;
+    gap:.65rem;
+    margin-bottom:1rem;
+  }
+  .build__mark b{
+    font-family:var(--display);
+    font-weight:200;
+    font-size:3.75rem;
+    line-height:.82;
+    letter-spacing:-.03em;
+  }
+  .build__mark span{
+    font-family:var(--mono);
+    font-size:.625rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--fg-faint);
+  }
+  .build__label{
+    font-family:var(--display);
+    font-weight:400;
+    font-size:1.1875rem;
+    letter-spacing:-.012em;
+    margin:0 0 .2rem;
+    padding-bottom:.55rem;
+    border-bottom:2px solid var(--accent);  /* graphic rule, not type */
+    display:inline-block;
+  }
+  .build__open{
+    margin-top:1.25rem;
+    font-family:var(--mono);
+    font-size:.6875rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--accent-ink);
+    display:inline-flex;
+    align-items:center;
+    gap:.5rem;
+  }
+  .build__open::after{
+    content:"";
+    width:1.4rem;height:2px;
+    background:var(--accent);
+    transition:width .16s ease;
+  }
+  .build:hover .build__open::after{width:2.4rem}
+
+  .stamp{
+    display:flex;
+    border-top:1px solid var(--rule);
+    font-family:var(--mono);
+    font-size:.625rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+  .stamp span{
+    padding:.6rem .8rem;
+    border-right:1px solid var(--rule);
+    color:var(--fg-faint);
+  }
+  .stamp span:last-child{border-right:0;margin-left:auto;color:var(--accent-ink)}
+
+  /* ---------- compare band ---------- */
+  .compare{
+    border-top:1px solid var(--hairline);
+    background:var(--sheet-lift);
+    padding:1.5rem;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1.25rem;
+    flex-wrap:wrap;
+  }
+  .compare p{margin:0;font-size:.875rem;line-height:1.6;color:var(--fg-soft);max-width:46ch}
+  .btn{
+    font-family:var(--mono);
+    font-size:.75rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    background:var(--accent-ink);
+    color:#fff;
+    border:1px solid var(--accent-ink);
+    padding:.8rem 1.4rem;
+    text-decoration:none;
+    display:inline-block;
+    transition:background .16s ease;
+  }
+  .btn:hover{background:#0f4d64;border-color:#0f4d64}
+  .btn:focus-visible{outline:2px solid var(--fg);outline-offset:3px}
+
+  footer{
+    max-width:var(--shell);
+    margin:.9rem auto 0;
+    font-family:var(--mono);
+    font-size:.625rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--fg-faint);
+  }
+
+  @media (max-width:720px){
+    .builds{grid-template-columns:1fr}
+    .build{border-right:0;border-bottom:1px solid var(--rule)}
+    .build:last-child{border-bottom:0}
+    .titlebar__name{flex-basis:100%;border-right:0;border-bottom:1px solid var(--rule)}
+    .metacell{flex:1}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
+</head>
+<body>
+
+<main class="sheet">
+
+  <div class="titlebar">
+    <div class="titlebar__name">
+      <p class="eyebrow">Design review</p>
+      <h1 class="titlebar__title">Construction Takes Talent</h1>
+    </div>
+    <dl class="titlebar__meta">
+      <div class="metacell"><dt>Issued</dt><dd id="today">&mdash;</dd></div>
+      <div class="metacell"><dt>Builds</dt><dd>2</dd></div>
+      <div class="metacell"><dt>Status</dt><dd>For review</dd></div>
+    </dl>
+  </div>
+
+  <div class="builds">
+
+    <a class="build" href="build-a.html">
+      <div class="build__body">
+        <div class="build__mark"><b>A</b></div>
+        <h2 class="build__label">Build A</h2>
+        <span class="build__open">Open build A</span>
+      </div>
+      <div class="stamp"><span>Sheet 01</span><span>Full screen</span></div>
+    </a>
+
+    <a class="build" href="build-b.html">
+      <div class="build__body">
+        <div class="build__mark"><b>B</b></div>
+        <h2 class="build__label">Build B</h2>
+        <span class="build__open">Open build B</span>
+      </div>
+      <div class="stamp"><span>Sheet 02</span><span>Full screen</span></div>
+    </a>
+
+  </div>
+
+  <div class="compare">
+    <p>Side-by-side puts both builds in one window. Best on a laptop &mdash; on a phone
+    they stack.</p>
+    <a class="btn" href="compare.html">Compare side by side</a>
+  </div>
+
+</main>
+
+<footer>Internal review link &mdash; not published</footer>
+
+<script>
+  document.getElementById("today").textContent =
+    new Date().toLocaleDateString("en-US",{year:"numeric",month:"short",day:"numeric"});
+</script>
+
+</body>
+</html>
