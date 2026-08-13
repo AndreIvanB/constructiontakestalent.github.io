@@ -1,0 +1,19 @@
+[
+  { "title": "Traveling Superintendent",   "group": "Field Staff",         "dept": "Superintendent",      "location": "Multi-site · Travel required", "url": "https://www.linkedin.com/jobs/" },
+  { "title": "Superintendent — Ground-Up", "group": "Field Staff",         "dept": "Superintendent",      "location": "Field-based · Regional",       "url": "https://www.linkedin.com/jobs/" },
+  { "title": "Assistant Superintendent",   "group": "Field Staff",         "dept": "Superintendent",      "location": "Field-based",                  "url": "https://www.linkedin.com/jobs/" },
+  { "title": "MEP Superintendent",         "group": "Field Staff",         "dept": "MEP",                 "location": "Field-based · Regional",       "url": "https://www.linkedin.com/jobs/" },
+  { "title": "Safety Manager",             "group": "Field Staff",         "dept": "Safety",              "location": "Multi-site",                   "url": "https://www.linkedin.com/jobs/" },
+
+  { "title": "Project Engineer",           "group": "Project Engineering", "dept": "Project Engineering", "location": "Field-based",                  "url": "https://www.linkedin.com/jobs/" },
+  { "title": "Assistant Project Manager",  "group": "Project Engineering", "dept": "Project Management",  "location": "Field-based · Hybrid",         "url": "https://www.linkedin.com/jobs/" },
+  { "title": "Project Manager",            "group": "Project Engineering", "dept": "Project Management",  "location": "Regional",                     "url": "https://www.linkedin.com/jobs/" },
+  { "title": "Senior Project Manager",     "group": "Project Engineering", "dept": "Project Management",  "location": "Regional · Multi-project",     "url": "https://www.linkedin.com/jobs/" },
+  { "title": "Project Executive",          "group": "Project Engineering", "dept": "Operations",          "location": "Office-based · Multi-project", "url": "https://www.linkedin.com/jobs/" },
+
+  { "title": "Estimator",                  "group": "Precon & Estimating", "dept": "Estimating",          "location": "Office-based",                 "url": "https://www.linkedin.com/jobs/" },
+  { "title": "Senior Estimator",           "group": "Precon & Estimating", "dept": "Estimating",          "location": "Office-based · Hybrid",        "url": "https://www.linkedin.com/jobs/" },
+  { "title": "Preconstruction Manager",    "group": "Precon & Estimating", "dept": "Precon",              "location": "Office-based",                 "url": "https://www.linkedin.com/jobs/" },
+  { "title": "VDC / BIM Manager",          "group": "Precon & Estimating", "dept": "VDC",                 "location": "Hybrid",                       "url": "https://www.linkedin.com/jobs/" },
+  { "title": "Purchasing Agent",           "group": "Precon & Estimating", "dept": "Purchasing",          "location": "Office-based",                 "url": "https://www.linkedin.com/jobs/" }
+]

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Build A / Build B &mdash; Construction Takes Talent</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="robots" content="noindex">
+<style>
+  :root{
+    --display:"Segoe UI Variable Display","Segoe UI",-apple-system,
+              "Helvetica Neue","Helvetica",Arial,sans-serif;
+    --body:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,
+           Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"Cascadia Mono","Segoe UI Mono",Consolas,"SF Mono",monospace;
+  }
+  :root,
+  :root[data-theme="dark"],
+  :root[data-theme="light"]{
+    --bg:        #e0e2e1 !important;
+    --sheet:     #eceded !important;
+    --sheet-lift:#f5f6f5 !important;
+    --fg:        #1e2226 !important;
+    --fg-soft:   rgba(30,34,38,.72) !important;
+    --fg-faint:  rgba(30,34,38,.50) !important;
+    --accent:    #2596be !important;  /* graphic only */
+    --accent-ink:#14607d !important;  /* accent type */
+    --hairline:  rgba(30,34,38,.16) !important;
+    --rule:      rgba(30,34,38,.085) !important;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    background:var(--bg);
+    color:var(--fg);
+    font-family:var(--body);
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* ---------- control bar ---------- */
+  .bar{
+    flex:0 0 auto;
+    background:var(--sheet-lift);
+    border-bottom:1px solid var(--hairline);
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    padding:.65rem .9rem;
+    flex-wrap:wrap;
+  }
+  .bar__title{
+    font-family:var(--display);
+    font-weight:200;
+    font-size:1.25rem;
+    letter-spacing:-.022em;
+    margin:0;
+  }
+  .back{
+    font-family:var(--mono);
+    font-size:.6875rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--accent-ink);
+    text-decoration:none;
+    border:1px solid var(--hairline);
+    padding:.55rem .9rem;
+    background:var(--sheet);
+  }
+  .back:hover{background:var(--accent-ink);color:#fff;border-color:var(--accent-ink)}
+  .back:focus-visible{outline:2px solid var(--accent-ink);outline-offset:2px}
+
+  .modes{display:flex;margin-left:auto;border:1px solid var(--hairline)}
+  .modes button{
+    font-family:var(--mono);
+    font-size:.6875rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    background:var(--sheet);
+    color:var(--fg-soft);
+    border:0;
+    border-right:1px solid var(--hairline);
+    padding:.6rem 1rem;
+    cursor:pointer;
+    transition:background .16s ease,color .16s ease;
+  }
+  .modes button:last-child{border-right:0}
+  .modes button:hover{background:var(--sheet-lift);color:var(--accent-ink)}
+  .modes button[aria-pressed="true"]{
+    background:var(--accent-ink);
+    color:#fff;
+  }
+  .modes button:focus-visible{outline:2px solid var(--accent-ink);outline-offset:-4px}
+
+  /* ---------- panes ---------- */
+  .panes{flex:1 1 auto;display:flex;min-height:0}
+  .pane{
+    flex:1 1 50%;
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    border-right:1px solid var(--hairline);
+  }
+  .pane:last-child{border-right:0}
+  .pane__tag{
+    flex:0 0 auto;
+    background:var(--sheet);
+    border-bottom:2px solid var(--accent);  /* graphic rule */
+    font-family:var(--mono);
+    font-size:.625rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    padding:.5rem .75rem;
+    display:flex;
+    justify-content:space-between;
+    gap:.75rem;
+    color:var(--fg-faint);
+  }
+  .pane__tag a{color:var(--accent-ink);text-decoration:none;letter-spacing:.1em}
+  .pane__tag a:hover{text-decoration:underline}
+  .pane__tag a:focus-visible{outline:2px solid var(--accent-ink);outline-offset:2px}
+  .pane iframe{
+    flex:1 1 auto;
+    width:100%;
+    border:0;
+    background:var(--sheet);
+    min-height:0;
+  }
+
+  body[data-mode="a"] .pane--b,
+  body[data-mode="b"] .pane--a{display:none}
+  body[data-mode="a"] .pane--a,
+  body[data-mode="b"] .pane--b{flex-basis:100%;border-right:0}
+
+  .note{
+    display:none;
+    background:var(--sheet-lift);
+    border-bottom:1px solid var(--rule);
+    color:var(--fg-faint);
+    font-family:var(--mono);
+    font-size:.6875rem;
+    line-height:1.5;
+    padding:.55rem .9rem;
+  }
+
+  @media (max-width:820px){
+    .panes{flex-direction:column}
+    .pane{border-right:0;border-bottom:1px solid var(--hairline);min-height:70vh}
+    .pane:last-child{border-bottom:0}
+    body[data-mode="split"] .note{display:block}
+    .modes{margin-left:0;width:100%}
+    .modes button{flex:1;padding:.6rem .5rem}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
+</head>
+<body data-mode="split">
+
+<header class="bar">
+  <a class="back" href="index.html">Back</a>
+  <h1 class="bar__title">Build A / Build B</h1>
+  <div class="modes" role="group" aria-label="View mode">
+    <button type="button" data-set="a" aria-pressed="false">Only A</button>
+    <button type="button" data-set="split" aria-pressed="true">Both</button>
+    <button type="button" data-set="b" aria-pressed="false">Only B</button>
+  </div>
+</header>
+
+<p class="note">Narrow screen &mdash; the builds are stacked. Scroll down for build B.</p>
+
+<div class="panes">
+  <section class="pane pane--a">
+    <div class="pane__tag">
+      <span>Build A &middot; by project stage</span>
+      <a href="build-a.html" target="_blank" rel="noopener">Open full screen</a>
+    </div>
+    <iframe src="build-a.html" title="Build A" loading="lazy"></iframe>
+  </section>
+
+  <section class="pane pane--b">
+    <div class="pane__tag">
+      <span>Build B &middot; by company function</span>
+      <a href="build-b.html" target="_blank" rel="noopener">Open full screen</a>
+    </div>
+    <iframe src="build-b.html" title="Build B" loading="lazy"></iframe>
+  </section>
+</div>
+
+<script>
+  var buttons = document.querySelectorAll(".modes button");
+  buttons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.body.dataset.mode = btn.dataset.set;
+      buttons.forEach(function (b) {
+        b.setAttribute("aria-pressed", String(b === btn));
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

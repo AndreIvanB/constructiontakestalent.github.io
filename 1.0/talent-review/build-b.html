@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Construction Takes Talent — Construction Recruiting &amp; Sourcing</title>
+<meta name="description" content="We have work. We need talent. Confidential conversations for superintendents, project managers, engineers and corporate staff in construction.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+<!-- Link preview for LinkedIn, iMessage, Slack.
+     share-card.png does not exist yet — make it 1200x630 and drop it
+     beside this file, or delete the og:image line until you have one. -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Construction Takes Talent">
+<meta property="og:description" content="We have work. We need talent. Confidential conversations for construction professionals.">
+<meta property="og:image" content="share-card.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<style>
+  /* ============================================================
+     TOKENS
+     Every color/space decision routes through these.
+     Light = fresh pour. Dark = jobsite after dark.
+     ============================================================ */
+  :root {
+    --display: "Arial Black", "Segoe UI Black", "Helvetica Neue", system-ui, sans-serif;
+    --body:    "Segoe UI", system-ui, -apple-system, Helvetica, Arial, sans-serif;
+    --mono:    ui-monospace, "Cascadia Mono", "Segoe UI Mono", Consolas, "SF Mono", monospace;
+
+    --measure: 66ch;
+    --gutter: clamp(1.25rem, 5vw, 4.5rem);
+    --shell: 1180px;
+  }
+
+  /* SINGLE COMMITTED PALETTE — deliberately not theme-reactive.
+     Off-white concrete ground, charcoal type, every viewer, every device.
+     A candidate-facing brand page shouldn't change identity based on
+     someone's OS setting, so there is no dark variant to drift out of sync.
+     The !important pins survive a host page that stamps data-theme on :root. */
+  :root,
+  :root[data-theme="dark"],
+  :root[data-theme="light"] {
+    --concrete:      #e7e8e6 !important;
+    --concrete-lift: #f1f2f0 !important;
+    --concrete-deep: #dbdddb !important;
+    --concrete-edge: #c9cbc9 !important;
+    --ink:           #23272b !important;
+    --ink-soft:      rgba(35, 39, 43, 0.72) !important;
+    --ink-faint:     rgba(35, 39, 43, 0.52) !important;
+    --card:          #ececf7 !important;
+    --card-hover:    #f4f4fb !important;
+    --accent:        #2596be !important;
+    --accent-ink:    #14607d !important;
+    --line:          rgba(37, 150, 190, 0.38) !important;
+    --line-strong:   rgba(37, 150, 190, 0.85) !important;
+    --hairline:      rgba(35, 39, 43, 0.16) !important;
+  }
+
+  /* Also pin the page chrome, in case the host sets a dark body background
+     behind our section backgrounds. */
+  html, body { background: #e7e8e6 !important; color-scheme: only light; }
+
+  * { box-sizing: border-box; }
+
+  .ctt {
+    position: relative;
+    background: var(--concrete);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* Barely-there grain so the flat grey reads as a poured surface, not a swatch.
+     Painted once to a data URI by script; harmless if script never runs. */
+  .grain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.05;
+    background-repeat: repeat;
+    mix-blend-mode: multiply;
+  }
+
+  .shell {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: var(--shell);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* ---- tape-measure rule: the one recurring motif ---- */
+  .tick-rule {
+    height: 11px;
+    border-top: 1px solid var(--line);
+    background-image:
+      /* end cap — the repeat lands ticks at 0,11,22…121, so the right
+         edge falls in a gap. This pins a final tick there to close it. */
+      linear-gradient(var(--line), var(--line)),
+      /* the graduations */
+      repeating-linear-gradient(
+        to right,
+        var(--line) 0 1px,
+        transparent 1px 11px
+      );
+    background-size: 1px 5px, 100% 5px;
+    background-position: top right, top left;
+    background-repeat: no-repeat, no-repeat;
+  }
+
+  /* ============================================================
+     BRAND LOCKUP
+     ============================================================ */
+  .masthead {
+    position: relative;
+    z-index: 2;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .masthead .shell {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.85rem, 2vw, 1.25rem);
+    padding-block: 1.1rem;
+  }
+
+  /* The mark: C for Construction holding TT for Takes Talent.
+     The two T stems are deliberately unequal — the first runs longer.
+     Proportional difference, not colour, so it survives one-colour
+     print and small sizes. */
+  .brand-mark {
+    flex: none;
+    width: 46px;
+    height: 46px;
+    display: block;
+  }
+
+  .wordmark {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .wordmark b {
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(0.95rem, 2.1vw, 1.15rem);
+    letter-spacing: -0.015em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  /* Direct child only — this styles the "Recruiting & Sourcing" subline.
+     A descendant selector here also caught the .tt spans inside <b>,
+     shrinking the two T's to 0.62rem mono. */
+  .wordmark > span {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* The two T's of Takes and Talent, picked out to echo the TT in the
+     mark. Same #2596be as the symbol so they read as one system. */
+  .tt { color: var(--accent); }
+
+  .masthead nav {
+    margin-left: auto;
+    display: flex;
+    gap: 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+  .masthead nav a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding-bottom: 3px;
+    border-bottom: 1px solid transparent;
+  }
+  .masthead nav a:hover,
+  .masthead nav a:focus-visible { color: var(--ink); border-bottom-color: var(--accent); }
+  @media (max-width: 620px) { .masthead nav { display: none; } }
+
+  /* ============================================================
+     HERO
+     ============================================================ */
+  .hero {
+    padding-block: clamp(4.5rem, 13vh, 9rem) clamp(4rem, 11vh, 8rem);
+    background:
+      radial-gradient(125% 85% at 50% -10%, var(--concrete-lift), transparent 62%),
+      linear-gradient(to bottom, transparent 70%, var(--concrete-deep));
+  }
+
+  .hero .shell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.6rem;
+  }
+
+  .eyebrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .eyebrow p {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+  }
+  .eyebrow .tick-rule { width: 132px; }
+
+  /* Headline slot holds stacked variants for the rotator; height comes from
+     the tallest line so nothing reflows when they cross-fade. */
+  .headline {
+    position: relative;
+    display: grid;
+    width: 100%;
+  }
+  .headline h1 {
+    grid-area: 1 / 1;
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(2.6rem, 8.2vw, 5.75rem);
+    line-height: 0.94;
+    letter-spacing: -0.035em;
+    text-transform: uppercase;
+    text-wrap: balance;
+    transition: opacity 620ms ease, transform 620ms cubic-bezier(.22,.61,.36,1);
+  }
+  .headline h1[data-state="out"]   { opacity: 0; transform: translateY(-0.32em); pointer-events: none; }
+  .headline h1[data-state="queue"] { opacity: 0; transform: translateY(0.32em);  pointer-events: none; }
+  .headline h1[data-state="in"]    { opacity: 1; transform: none; }
+
+  .hero h2 {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(1.05rem, 2.9vw, 1.7rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .hero .lede {
+    margin: 0;
+    max-width: 54ch;
+    font-size: clamp(1rem, 1.6vw, 1.12rem);
+    font-weight: 400;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    text-wrap: pretty;
+  }
+
+  /* ---- buttons ---- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.9rem 1.5rem;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--concrete);
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 180ms ease, color 180ms ease, border-color 180ms ease, transform 180ms ease;
+  }
+  .btn:hover, .btn:focus-visible {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    transform: translateY(-1px);
+  }
+  .btn .arrow { transition: transform 180ms ease; }
+  .btn:hover .arrow { transform: translateY(2px); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--line-strong);
+  }
+  .btn-ghost:hover, .btn-ghost:focus-visible { background: var(--accent); color: #fff; }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* ============================================================
+     SECTION FURNITURE
+     ============================================================ */
+  .band { padding-block: clamp(3.5rem, 9vh, 6rem); }
+  .band-deep { background: var(--concrete-deep); border-block: 1px solid var(--hairline); }
+
+  .band-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.25rem 2rem;
+    margin-bottom: 2rem;
+  }
+  .band-head h2 {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(1.6rem, 4.2vw, 2.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    text-transform: uppercase;
+  }
+  .band-head .kicker {
+    margin: 0 0 0.7rem;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+  }
+  .band-head .count {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-variant-numeric: tabular-nums;
+    padding-bottom: 0.35rem;
+  }
+
+  /* ---- filters ---- */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.75rem;
+  }
+  .chip {
+    padding: 0.5rem 0.95rem;
+    border: 1px solid var(--hairline);
+    background: transparent;
+    color: var(--ink-soft);
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+  }
+  .chip:hover { color: var(--ink); border-color: var(--line-strong); }
+  .chip[aria-pressed="true"] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--concrete);
+  }
+
+  /* ---- how we work ----
+     Three columns divided by hairlines. The 01/02/03 are kept because
+     these genuinely are sequential — it's the order the engagement
+     happens in, not decoration. */
+  .band-edge { border-bottom: 1px solid var(--hairline); }
+
+  .hww {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .hww-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    padding: 2.25rem 1.5rem 0.25rem 0;
+  }
+  .hww-col + .hww-col {
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--hairline);
+  }
+  .hww-col .n {
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.2em;
+    color: var(--accent-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .hww-col h3 {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 1.06rem;
+    line-height: 1.18;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  .hww-col p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.62;
+    color: var(--ink-soft);
+    text-wrap: pretty;
+  }
+  @media (max-width: 700px) {
+    .hww { grid-template-columns: 1fr; }
+    .hww-col { padding: 1.75rem 0 0; }
+    .hww-col + .hww-col {
+      padding-left: 0;
+      padding-top: 1.75rem;
+      border-left: 0;
+      border-top: 1px solid var(--hairline);
+    }
+  }
+
+  /* ---- job grid ---- */
+  .jobs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  @media (max-width: 940px) { .jobs { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 620px) { .jobs { grid-template-columns: 1fr; } }
+
+  .job {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    min-height: 190px;
+    padding: 1.35rem 1.35rem 1.15rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    text-decoration: none;
+    transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+  }
+  .job:hover, .job:focus-visible {
+    border-color: var(--line-strong);
+    background: var(--card-hover);
+    transform: translateY(-2px);
+  }
+  .job .tag {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+  }
+  .job h3 {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: 1.22rem;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  .job .meta {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+  }
+  .job .go {
+    margin-top: auto;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--hairline);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .job:hover .go, .job:focus-visible .go { color: var(--accent-ink); }
+  .job .go .arrow { transition: transform 180ms ease; }
+  .job:hover .go .arrow { transform: translateX(4px); }
+
+  .jobs-foot {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.75rem;
+  }
+  .empty {
+    grid-column: 1 / -1;
+    padding: 2rem;
+    border: 1px dashed var(--hairline);
+    text-align: center;
+    color: var(--ink-soft);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* ============================================================
+     TALK TO A RECRUITER
+     ============================================================ */
+  .recruiter-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+  @media (max-width: 880px) { .recruiter-grid { grid-template-columns: 1fr; } }
+
+  .pitch { display: flex; flex-direction: column; gap: 1.15rem; }
+  .pitch h2 {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 900;
+    font-size: clamp(1.6rem, 4vw, 2.35rem);
+    line-height: 1.03;
+    letter-spacing: -0.025em;
+    text-transform: uppercase;
+    text-wrap: balance;
+  }
+  .pitch p { margin: 0; color: var(--ink-soft); max-width: 44ch; }
+  .pitch .confid {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 0.95rem 1.05rem;
+    border-left: 2px solid var(--accent);
+    background: rgba(37, 150, 190, 0.07);
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+  }
+  .pitch .confid strong { color: var(--ink); }
+  .pitch .direct {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+  }
+  .pitch .direct a { color: var(--accent-ink); text-decoration: none; border-bottom: 1px solid var(--line); }
+  .pitch .direct a:hover { border-bottom-color: var(--accent); }
+
+  form.intake {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    padding: clamp(1.25rem, 3vw, 1.9rem);
+    background: var(--card);
+    border: 1px solid var(--line);
+  }
+  .field { display: flex; flex-direction: column; gap: 0.4rem; }
+  .field.wide { grid-column: 1 / -1; }
+  @media (max-width: 520px) { form.intake { grid-template-columns: 1fr; } .field { grid-column: 1 / -1; } }
+
+  .field label {
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .field .opt { color: var(--ink-faint); letter-spacing: 0.1em; }
+
+  .field input,
+  .field select,
+  .field textarea {
+    font-family: var(--body);
+    font-size: 0.95rem;
+    color: var(--ink);
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid var(--hairline);
+    border-radius: 0;
+    padding: 0.7rem 0.8rem;
+    width: 100%;
+    transition: border-color 160ms ease, background 160ms ease;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--accent);
+    background: transparent;
+    outline: none;
+  }
+  .field textarea { resize: vertical; min-height: 84px; }
+
+  /* file input: native control hidden behind a square, on-brand trigger */
+  .file-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+  .file-row input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+  .file-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.95rem;
+    border: 1px solid var(--line-strong);
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    cursor: pointer;
+  }
+  .file-btn:hover { background: rgba(37,150,190,0.1); }
+  .file-row input[type="file"]:focus-visible + .file-btn { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .file-name { font-size: 0.85rem; color: var(--ink-soft); }
+
+  .intake .submit-row {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 0.25rem;
+  }
+  .intake .fineprint {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    max-width: 34ch;
+  }
+  .status {
+    grid-column: 1 / -1;
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    line-height: 1.5;
+  }
+  .status[data-kind="ok"]  { color: var(--accent-ink); }
+  .status[data-kind="err"] { color: #b03a2e; }
+
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  footer.ctt-foot {
+    border-top: 1px solid var(--hairline);
+    padding-block: 2.25rem;
+  }
+  footer.ctt-foot .shell {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  footer.ctt-foot a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid transparent; }
+  footer.ctt-foot a:hover { color: var(--ink); border-bottom-color: var(--accent); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<!-- ============================================================
+     THE MARK — drawn as outlines, defined once, reused anywhere.
+     C = Construction, the ring that surrounds. TT = Takes Talent,
+     held inside it. The first T's stem is 12 units to the second's 9:
+     uneven on purpose, subtle enough to read as intent.
+     Symbol contents carry no fill; colour comes from each <use>.
+     ============================================================ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="mk-c" viewBox="0 0 48 48">
+    <path d="M38.78 41.62 A23 23 0 1 1 38.78 6.38 L34.61 11.36 A16.5 16.5 0 1 0 34.61 36.64 Z"/>
+  </symbol>
+  <symbol id="mk-tt" viewBox="0 0 48 48">
+    <rect x="11" y="16" width="12" height="5"/>
+    <rect x="14.5" y="21" width="5" height="12"/>
+    <rect x="26" y="16" width="11" height="5"/>
+    <rect x="29" y="21" width="5" height="9"/>
+  </symbol>
+</svg>
+
+<div class="ctt">
+  <div class="grain" id="grain" aria-hidden="true"></div>
+
+  <!-- ========== BRAND LOCKUP ========== -->
+  <header class="masthead">
+    <div class="shell">
+      <svg class="brand-mark" viewBox="0 0 48 48" role="img"
+           aria-label="Construction Takes Talent mark">
+        <use href="#mk-c"  width="48" height="48" fill="#23272b"/>
+        <use href="#mk-tt" width="48" height="48" fill="#2596be"/>
+      </svg>
+      <div class="wordmark">
+        <b>Construction <span class="tt">T</span>akes <span class="tt">T</span>alent</b>
+        <span>Recruiting &amp; Sourcing</span>
+      </div>
+      <nav aria-label="Sections">
+        <a href="#openings">Open Roles</a>
+        <a href="#how-we-work">How We Work</a>
+        <a href="#recruiter">Talk to a Recruiter</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero">
+    <div class="shell">
+      <div class="eyebrow">
+        <p>Now hiring &mdash; field &amp; corporate</p>
+        <div class="tick-rule" aria-hidden="true"></div>
+      </div>
+
+      <div class="headline" id="headline">
+        <h1 data-state="in">Talent Builds the World.</h1>
+      </div>
+
+      <h2>We have work. We need talent.</h2>
+
+      <p class="lede">
+        Anyone can post a job. We&rsquo;d rather understand the work you actually want to do
+        &mdash; then put you where your judgment counts. Tell us who you are and we&rsquo;ll
+        be straight with you about where you fit.
+      </p>
+
+      <a class="btn" href="#openings">
+        See Open Roles
+        <span class="arrow" aria-hidden="true">&darr;</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ========== JOB OPENINGS ========== -->
+  <section class="band band-deep" id="openings">
+    <div class="shell">
+      <div class="band-head">
+        <div>
+          <p class="kicker">Open Roles</p>
+          <h2>Where we need people</h2>
+        </div>
+        <div class="count" id="job-count"></div>
+      </div>
+
+      <div class="filters" id="filters" role="group" aria-label="Filter roles by group"></div>
+
+      <div class="jobs" id="jobs"></div>
+
+      <div class="jobs-foot" id="jobs-foot" hidden>
+        <button class="btn btn-ghost" type="button" id="view-all">
+          View All Openings
+          <span class="arrow" aria-hidden="true">&rarr;</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== HOW WE WORK ========== -->
+  <section class="band band-edge" id="how-we-work">
+    <div class="shell">
+      <div class="band-head">
+        <div>
+          <p class="kicker">How we work</p>
+          <h2>What you get that a job board can&rsquo;t give you</h2>
+        </div>
+      </div>
+
+      <div class="hww">
+        <div class="hww-col">
+          <span class="n">01</span>
+          <h3>We read the scope, not the title.</h3>
+          <p>
+            &ldquo;Superintendent&rdquo; means something different on a tilt-up than it does
+            on a hospital. We ask what you actually built, who reported to you, and how the
+            job was delivered &mdash; then we match on that.
+          </p>
+        </div>
+        <div class="hww-col">
+          <span class="n">02</span>
+          <h3>Your name doesn&rsquo;t move without your say-so.</h3>
+          <p>
+            Nothing goes to a client until you&rsquo;ve seen the company, the project, and
+            the number and told us yes. No blind submittals, no surprise calls to your
+            current employer.
+          </p>
+        </div>
+        <div class="hww-col">
+          <span class="n">03</span>
+          <h3>Straight answers on comp and travel.</h3>
+          <p>
+            You&rsquo;ll know the range, the per diem, the vehicle allowance, and how many
+            nights away before you take an interview &mdash; not after you&rsquo;ve burned a
+            PTO day on one.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== TALK TO A RECRUITER ========== -->
+  <section class="band" id="recruiter">
+    <div class="shell recruiter-grid">
+      <div class="pitch">
+        <p class="kicker" style="margin:0;font-family:var(--mono);font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:var(--accent-ink);">Confidential</p>
+        <h2>Not actively looking? Let&rsquo;s talk anyway.</h2>
+        <p>
+          Most of the best people we meet weren&rsquo;t on the market. If you&rsquo;re curious
+          about what else is out there, one conversation costs you nothing.
+        </p>
+        <div class="confid">
+          <span aria-hidden="true" style="font-family:var(--mono);color:var(--accent-ink);">&#9679;</span>
+          <span>
+            <strong>Your inquiry stays between us.</strong> Nothing is shared with your current
+            employer, and we don&rsquo;t submit you anywhere without your say-so.
+          </span>
+        </div>
+        <!-- SWAP POINT: your real inbox goes here and in RECRUITER_EMAIL below -->
+        <p class="direct">
+          Rather just email? <a href="mailto:hello@constructiontakestalent.com">hello@constructiontakestalent.com</a>
+        </p>
+      </div>
+
+      <form class="intake" id="intake" novalidate>
+        <div class="field">
+          <label for="f-name">Name</label>
+          <input id="f-name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="f-email">Email</label>
+          <input id="f-email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="f-phone">Phone <span class="opt">(optional)</span></label>
+          <input id="f-phone" name="phone" type="tel" autocomplete="tel">
+        </div>
+        <div class="field">
+          <label for="f-role">Role of interest</label>
+          <select id="f-role" name="role" required>
+            <option value="">Select&hellip;</option>
+          </select>
+        </div>
+        <div class="field wide">
+          <label for="f-resume">Resume <span class="opt">(optional &middot; PDF or DOC)</span></label>
+          <div class="file-row">
+            <input id="f-resume" name="resume" type="file" accept=".pdf,.doc,.docx,application/pdf">
+            <label class="file-btn" for="f-resume">
+              <span aria-hidden="true">&uarr;</span> Attach file
+            </label>
+            <span class="file-name" id="file-name">No file selected</span>
+          </div>
+        </div>
+        <div class="field wide">
+          <label for="f-note">Anything we should know <span class="opt">(optional)</span></label>
+          <textarea id="f-note" name="note" rows="3" placeholder="Markets you know, travel you'd take, what you want next."></textarea>
+        </div>
+        <div class="submit-row">
+          <button class="btn" type="submit">
+            Send Confidentially
+            <span class="arrow" aria-hidden="true">&rarr;</span>
+          </button>
+          <p class="fineprint">A recruiter replies within two business days.</p>
+        </div>
+        <p class="status" id="status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <footer class="ctt-foot">
+    <div class="shell">
+      <span>Construction <span class="tt">T</span>akes <span class="tt">T</span>alent</span>
+      <span><a href="mailto:hello@constructiontakestalent.com">hello@constructiontakestalent.com</a></span>
+      <span>Every inquiry confidential</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ============================================================
+     1. JOB FEED
+     ------------------------------------------------------------
+     Cards render from this array — nothing about a role is baked
+     into the markup. To go live, replace loadOpenings() below with
+     a fetch of your real source. LinkedIn has no public jobs API,
+     so the realistic options are:
+       a) an ATS feed (Greenhouse / Lever / Workday all publish JSON),
+       b) openings.json on your own host that recruiting edits,
+       c) your CMS.
+     Keep each record's shape identical and the UI needs no changes.
+     `url` is the deep link — point it at the exact LinkedIn posting.
+     ============================================================ */
+  var GROUPS = ["Field Leadership", "Project Support", "Corporate"];
+
+  var SEED_OPENINGS = [
+    { title: "Traveling Superintendent",  group: "Field Leadership", dept: "Superintendent",       location: "Multi-site · Travel required", url: "https://www.linkedin.com/jobs/" },
+    { title: "Senior Project Manager",    group: "Field Leadership", dept: "Project Management",   location: "Southern California",          url: "https://www.linkedin.com/jobs/" },
+    { title: "Project Engineer",          group: "Field Leadership", dept: "Project Engineering",  location: "Field-based · Regional",       url: "https://www.linkedin.com/jobs/" },
+    { title: "Preconstruction Manager",   group: "Project Support",  dept: "Precon",               location: "Office-based",                 url: "https://www.linkedin.com/jobs/" },
+    { title: "QA/QC Manager",             group: "Project Support",  dept: "QA/QC",                location: "Field-based",                  url: "https://www.linkedin.com/jobs/" },
+    { title: "Safety Manager",            group: "Project Support",  dept: "Safety",               location: "Multi-site",                   url: "https://www.linkedin.com/jobs/" },
+    { title: "Risk Management Analyst",   group: "Project Support",  dept: "Risk Management",      location: "Office-based · Hybrid",        url: "https://www.linkedin.com/jobs/" },
+    { title: "Marketing Coordinator",     group: "Corporate",        dept: "Marketing",            location: "Hybrid",                       url: "https://www.linkedin.com/jobs/" },
+    { title: "Staff Accountant",          group: "Corporate",        dept: "Accounting & Finance", location: "Office-based",                 url: "https://www.linkedin.com/jobs/" },
+    { title: "Technical Recruiter",       group: "Corporate",        dept: "Recruiting",           location: "Remote · Hybrid",              url: "https://www.linkedin.com/jobs/" }
+  ];
+
+  var CAREERS_URL = "https://www.linkedin.com/jobs/";  // full listing, used by "View All"
+  var PAGE_SIZE = 6;                                    // cards shown before "View All Openings"
+
+  function loadOpenings() {
+    // LIVE VERSION:
+    //   return fetch("/openings.json")
+    //     .then(function (r) { return r.json(); })
+    //     .catch(function () { return SEED_OPENINGS; });
+    return Promise.resolve(SEED_OPENINGS);
+  }
+
+  /* ============================================================
+     2. RENDER
+     ============================================================ */
+  var jobsEl   = document.getElementById("jobs");
+  var footEl   = document.getElementById("jobs-foot");
+  var viewAll  = document.getElementById("view-all");
+  var countEl  = document.getElementById("job-count");
+  var filtersEl = document.getElementById("filters");
+  var roleSelect = document.getElementById("f-role");
+
+  var openings = [];
+  var activeGroup = "All";
+  var expanded = false;
+
+  function visible() {
+    return activeGroup === "All"
+      ? openings
+      : openings.filter(function (j) { return j.group === activeGroup; });
+  }
+
+  function renderJobs() {
+    var list = visible();
+    var shown = expanded ? list : list.slice(0, PAGE_SIZE);
+
+    jobsEl.textContent = "";
+
+    if (!shown.length) {
+      var empty = document.createElement("p");
+      empty.className = "empty";
+      empty.textContent = "No openings in this group right now — talk to a recruiter below.";
+      jobsEl.appendChild(empty);
+    }
+
+    shown.forEach(function (job) {
+      var a = document.createElement("a");
+      a.className = "job";
+      a.href = job.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+
+      var tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = job.dept || job.group;
+
+      var h3 = document.createElement("h3");
+      h3.textContent = job.title;
+
+      var meta = document.createElement("p");
+      meta.className = "meta";
+      meta.textContent = job.location;
+
+      var go = document.createElement("span");
+      go.className = "go";
+      var goLabel = document.createElement("span");
+      goLabel.textContent = "View listing";
+      var arrow = document.createElement("span");
+      arrow.className = "arrow";
+      arrow.setAttribute("aria-hidden", "true");
+      arrow.textContent = "→";
+      go.appendChild(goLabel);
+      go.appendChild(arrow);
+
+      a.appendChild(tag);
+      a.appendChild(h3);
+      a.appendChild(meta);
+      a.appendChild(go);
+      jobsEl.appendChild(a);
+    });
+
+    var hidden = list.length - shown.length;
+    footEl.hidden = hidden <= 0;
+    if (hidden > 0) {
+      viewAll.firstChild.nodeValue = "View All " + list.length + " Openings ";
+    }
+
+    countEl.textContent = openings.length + " open " + (openings.length === 1 ? "role" : "roles");
+  }
+
+  function renderFilters() {
+    var present = GROUPS.filter(function (g) {
+      return openings.some(function (j) { return j.group === g; });
+    });
+    ["All"].concat(present).forEach(function (g) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.textContent = g === "All" ? "All Roles" : g;
+      b.setAttribute("aria-pressed", String(g === activeGroup));
+      b.addEventListener("click", function () {
+        activeGroup = g;
+        expanded = false;
+        Array.prototype.forEach.call(filtersEl.children, function (c) {
+          c.setAttribute("aria-pressed", String(c === b));
+        });
+        renderJobs();
+      });
+      filtersEl.appendChild(b);
+    });
+  }
+
+  function renderRoleOptions() {
+    GROUPS.forEach(function (g) {
+      var og = document.createElement("optgroup");
+      og.label = g;
+      openings.filter(function (j) { return j.group === g; }).forEach(function (j) {
+        var o = document.createElement("option");
+        o.value = j.title;
+        o.textContent = j.title;
+        og.appendChild(o);
+      });
+      if (og.children.length) { roleSelect.appendChild(og); }
+    });
+    var other = document.createElement("option");
+    other.value = "Not sure yet";
+    other.textContent = "Not sure yet — just exploring";
+    roleSelect.appendChild(other);
+  }
+
+  viewAll.addEventListener("click", function () {
+    var list = visible();
+    if (list.length > PAGE_SIZE * 2) {
+      window.open(CAREERS_URL, "_blank", "noopener");
+      return;
+    }
+    expanded = true;
+    renderJobs();
+  });
+
+  loadOpenings().then(function (data) {
+    openings = Array.isArray(data) ? data : [];
+    renderFilters();
+    renderRoleOptions();
+    renderJobs();
+  });
+
+  /* ============================================================
+     3. HEADLINE ROTATOR  (phase-2 feature, wired and ready)
+     Flip ROTATE to false to ship the static H1 only. The markup
+     doesn't change either way — variants are injected here.
+     ============================================================ */
+  var ROTATE = true;
+  var LINES = [
+    "Talent Builds the World.",
+    "Somebody Built That.",
+    "We Find Those People."
+  ];
+  var HOLD_MS = 3800;
+
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (ROTATE && !reduced && LINES.length > 1) {
+    var slot = document.getElementById("headline");
+    var first = slot.querySelector("h1");
+    var nodes = [first];
+
+    LINES.slice(1).forEach(function (text) {
+      var h = document.createElement("h1");
+      h.textContent = text;
+      h.setAttribute("data-state", "queue");
+      h.setAttribute("aria-hidden", "true");
+      slot.appendChild(h);
+      nodes.push(h);
+    });
+
+    var idx = 0;
+    window.setInterval(function () {
+      var out = nodes[idx];
+      idx = (idx + 1) % nodes.length;
+      var next = nodes[idx];
+
+      out.setAttribute("data-state", "out");
+      out.setAttribute("aria-hidden", "true");
+      next.setAttribute("data-state", "in");
+      next.removeAttribute("aria-hidden");
+
+      // park the outgoing line below the slot so it rises in next time
+      window.setTimeout(function () {
+        if (out.getAttribute("data-state") === "out") {
+          out.setAttribute("data-state", "queue");
+        }
+      }, 700);
+    }, HOLD_MS);
+  }
+
+  /* ============================================================
+     4. RECRUITER FORM
+     ------------------------------------------------------------
+     ENDPOINT = null  ->  composes a mailto: draft (works with zero
+     backend, but the browser cannot attach the resume file).
+     Set ENDPOINT to a real POST target and the whole submission,
+     resume included, goes straight to the recruiter / ATS:
+       - ATS inbound API (Greenhouse, Lever, Workday)
+       - a form service (Formspree, Basin, Formcarry)
+       - your own /api/apply route
+     ============================================================ */
+  var ENDPOINT = null;
+  var RECRUITER_EMAIL = "hello@constructiontakestalent.com";  // placeholder — swap for your real inbox
+
+  var form = document.getElementById("intake");
+  var statusEl = document.getElementById("status");
+  var fileInput = document.getElementById("f-resume");
+  var fileName = document.getElementById("file-name");
+
+  fileInput.addEventListener("change", function () {
+    fileName.textContent = fileInput.files.length
+      ? fileInput.files[0].name
+      : "No file selected";
+  });
+
+  function say(kind, msg) {
+    statusEl.setAttribute("data-kind", kind);
+    statusEl.textContent = msg;
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    var name  = form.name.value.trim();
+    var email = form.email.value.trim();
+    var role  = form.role.value;
+
+    if (!name)  { return say("err", "Add your name so we know who we're talking to."); }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return say("err", "That email doesn't look complete — check it and resend.");
+    }
+    if (!role) { return say("err", "Pick a role of interest, or choose “just exploring”."); }
+
+    if (ENDPOINT) {
+      say("ok", "Sending…");
+      fetch(ENDPOINT, { method: "POST", body: new FormData(form) })
+        .then(function (r) {
+          if (!r.ok) { throw new Error("bad status"); }
+          form.reset();
+          fileName.textContent = "No file selected";
+          say("ok", "Sent. A recruiter will reach out within two business days.");
+        })
+        .catch(function () {
+          say("err", "That didn't go through. Email " + RECRUITER_EMAIL + " and we'll pick it up from there.");
+        });
+      return;
+    }
+
+    // No backend yet: hand the message to their mail client.
+    var body = [
+      "Name: " + name,
+      "Email: " + email,
+      "Phone: " + (form.phone.value.trim() || "—"),
+      "Role of interest: " + role,
+      "",
+      form.note.value.trim(),
+      "",
+      fileInput.files.length ? "(Resume attached: " + fileInput.files[0].name + ")" : ""
+    ].join("\n");
+
+    window.location.href = "mailto:" + RECRUITER_EMAIL +
+      "?subject=" + encodeURIComponent("Confidential inquiry — " + role) +
+      "&body=" + encodeURIComponent(body);
+
+    say("ok", fileInput.files.length
+      ? "Your email draft is open — attach the resume file before sending."
+      : "Your email draft is open — hit send and it comes straight to recruiting.");
+  });
+
+  /* ============================================================
+     5. CONCRETE GRAIN
+     A 128px noise tile, painted once, tiled at ~5% opacity so the
+     flat grey reads as a poured surface instead of a swatch.
+     ============================================================ */
+  try {
+    var SIZE = 128;
+    var c = document.createElement("canvas");
+    c.width = c.height = SIZE;
+    var ctx = c.getContext("2d");
+    var img = ctx.createImageData(SIZE, SIZE);
+    var d = img.data;
+    var seed = 20260806;
+    function rnd() { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
+    for (var i = 0; i < d.length; i += 4) {
+      var v = 128 + (rnd() - 0.5) * 190;
+      d[i] = d[i + 1] = d[i + 2] = v;
+      d[i + 3] = 150 + rnd() * 60;
+    }
+    ctx.putImageData(img, 0, 0);
+    var el = document.getElementById("grain");
+    el.style.backgroundImage = "url(" + c.toDataURL("image/png") + ")";
+    el.style.backgroundSize = SIZE + "px " + SIZE + "px";
+  } catch (err) { /* grain is decorative; ignore */ }
+})();
+</script>
+</body>
+</html>
