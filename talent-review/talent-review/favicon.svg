@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <!-- Favicon is a deliberate reduction, not the full mark shrunk.
+       At 16px the C's ring and the TT stems merge into mud, so the
+       favicon drops the C and runs the TT ligature at full scale on
+       a charcoal field. Same two letters, legible at tab size. -->
+  <rect x="0" y="0" width="48" height="48" fill="#23272b"/>
+  <rect x="5" y="15" width="38" height="6" fill="#2596be"/>
+  <rect x="13" y="21" width="6" height="18" fill="#2596be"/>
+  <rect x="29" y="21" width="6" height="18" fill="#2596be"/>
+</svg>
