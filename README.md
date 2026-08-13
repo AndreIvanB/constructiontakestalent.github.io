@@ -1,1 +1,0 @@
-# constructiontakestalent.github.io
